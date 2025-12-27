@@ -1,0 +1,14 @@
+.active {
+  background: #5a67d8 !important;
+}
+
+.tab-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.tab-container .btn {
+  min-width: 150px;
+}
