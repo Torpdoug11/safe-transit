@@ -1,15 +1,17 @@
 [build]
-  command = "npm install && npm run build"
-  publish = "build"
-  functions = "functions"
+  command = "npm install --production"
+  publish = "."
 
 [build.environment]
   NODE_VERSION = "18.0.0"
   NPM_VERSION = "9.0.0"
 
+[functions]
+  directory = ""
+
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
 
 [dev]
@@ -17,5 +19,4 @@
   command = "npm start"
   port = 3000
   targetPort = 3000
-  publish = "public"
   autoLaunch = true
