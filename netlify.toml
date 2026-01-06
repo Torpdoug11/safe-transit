@@ -1,6 +1,6 @@
 [build]
   command = "npm install --production"
-  publish = "."
+  publish = "public"
 
 [build.environment]
   NODE_VERSION = "18.0.0"
