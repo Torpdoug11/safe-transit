@@ -3,8 +3,13 @@ const router = express.Router();
 const Deposit = require('../models/Deposit');
 const AuditLog = require('../models/AuditLog');
 const validator = require('validator');
+const { authMiddleware, adminAuth } = require('../middleware/auth');
 
 const auditLogs = new Map();
+
+// Apply authentication middleware to all admin routes
+router.use(authMiddleware);
+router.use(adminAuth);
 
 // Get all deposits with filtering
 router.get('/deposits', (req, res) => {

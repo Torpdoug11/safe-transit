@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Deposit = require('../models/Deposit');
 const validator = require('validator');
+const { sanitizeInput, depositValidation, handleValidationErrors } = require('../middleware/validation');
 
 // In-memory storage for deposits (in production, use a database)
 const deposits = new Map();
@@ -33,34 +34,9 @@ function getDeposits() {
 }
 
 // POST /deposit - Create a new deposit
-router.post('/', (req, res) => {
+router.post('/', sanitizeInput, depositValidation, handleValidationErrors, (req, res) => {
   try {
     const { amount, requirement, time_limit, creator_id, receiver_id, creator_email, receiver_email } = req.body;
-
-    // Validation
-    if (!amount || !requirement || !time_limit || !creator_id || !receiver_id) {
-      return res.status(400).json({
-        error: 'Missing required fields: amount, requirement, time_limit, creator_id, receiver_id'
-      });
-    }
-
-    if (!validator.isNumeric(amount.toString()) || parseFloat(amount) <= 0) {
-      return res.status(400).json({
-        error: 'Amount must be a positive number'
-      });
-    }
-
-    if (!validator.isISO8601(time_limit)) {
-      return res.status(400).json({
-        error: 'Time limit must be a valid ISO8601 timestamp'
-      });
-    }
-
-    if (!validator.isUUID(creator_id) || !validator.isUUID(receiver_id)) {
-      return res.status(400).json({
-        error: 'Creator ID and Receiver ID must be valid UUIDs'
-      });
-    }
 
     const deposit = new Deposit({
       amount: parseFloat(amount),

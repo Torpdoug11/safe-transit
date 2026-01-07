@@ -1,9 +1,9 @@
-const API_BASE_URL = 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 export const api = {
   async createDeposit(depositData) {
     try {
-      const response = await fetch(${API_BASE_URL}/deposit, {
+      const response = await fetch(`${API_BASE_URL}/deposit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const api = {
 
   async getDeposit(id) {
     try {
-      const response = await fetch(${API_BASE_URL}/deposit/)
+      const response = await fetch(`${API_BASE_URL}/deposit/${id}`,)
       
       if (!response.ok) {
         const error = await response.json()
@@ -41,7 +41,7 @@ export const api = {
 
   async fulfillDeposit(id) {
     try {
-      const response = await fetch(${API_BASE_URL}/deposit//fulfill, {
+      const response = await fetch(`${API_BASE_URL}/deposit/${id}/fulfill`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -51,6 +51,22 @@ export const api = {
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to fulfill deposit')
+      }
+      
+      return await response.json()
+    } catch (error) {
+      console.error('API Error:', error)
+      throw error
+    }
+  },
+
+  async getAllDeposits() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/deposit`)
+      
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to fetch deposits')
       }
       
       return await response.json()

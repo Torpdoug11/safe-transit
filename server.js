@@ -1,5 +1,10 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const { body, validationResult } = require('express-validator');
+const { logger, requestLogger, errorHandler } = require('./middleware/logging');
 const { router: depositRoutes } = require('./routes/deposits');
 const paymentRoutes = require('./routes/payments');
 const adminRoutes = require('./routes/admin');
@@ -13,20 +18,39 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(requestLogger);
 
 
-// CORS middleware (for development)
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+// Security middleware
+app.use(helmet());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.'
   }
 });
+app.use('/api/', limiter);
+
+// CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS 
+      ? process.env.ALLOWED_ORIGINS.split(',')
+      : ['http://localhost:5173', 'http://localhost:3000'];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Routes
 app.use('/deposit', depositRoutes);
@@ -74,13 +98,7 @@ app.use('*', (req, res) => {
 });
 
 // Global error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
-  });
-});
+app.use(errorHandler);
 
 // Initialize shared services
 const notificationService = new NotificationService();
@@ -91,6 +109,11 @@ setSchedulerService(schedulerService);
 
 // Start server
 app.listen(PORT, () => {
+  logger.info(`Safe Transit API server started`, {
+    port: PORT,
+    nodeEnv: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
   console.log(`Safe Transit API server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`API docs: http://localhost:${PORT}/`);
@@ -100,12 +123,14 @@ app.listen(PORT, () => {
   
   // Graceful shutdown
   process.on('SIGINT', () => {
+    logger.info('Received SIGINT, shutting down gracefully');
     console.log('\nShutting down gracefully...');
     schedulerService.stopScheduler();
     process.exit(0);
   });
   
   process.on('SIGTERM', () => {
+    logger.info('Received SIGTERM, shutting down gracefully');
     console.log('\nShutting down gracefully...');
     schedulerService.stopScheduler();
     process.exit(0);

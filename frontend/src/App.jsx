@@ -9,27 +9,21 @@ function App() {
 
   return (
     <div className='container'>
-      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '10px' }}>
-          Safe Transit
-        </h1>
-        <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem' }}>
-          Secure Deposit Management System
-        </p>
+      <header>
+        <h1>Safe Transit</h1>
+        <p>Secure Deposit Management System</p>
       </header>
 
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+      <div className='tab-container'>
         <button
           className={`btn ${currentView === 'create' ? 'active' : ''}`}
           onClick={() => setCurrentView('create')}
-          style={{ marginRight: '10px' }}
         >
           Create Deposit
         </button>
         <button
           className={`btn ${currentView === 'receiver' ? 'active' : ''}`}
           onClick={() => setCurrentView('receiver')}
-          style={{ marginRight: '10px' }}
         >
           Receiver View
         </button>

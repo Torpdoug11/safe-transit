@@ -1,112 +1,20 @@
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Reset and base styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Orange theme is now handled by App.css - this file is minimal */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
   min-height: 100vh;
-  color: #333;
 }
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.btn {
-  background: #667eea;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  background: #5a67d8;
-  transform: translateY(-2px);
-}
-
-.btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #555;
-}
-
-.form-group input, .form-group textarea {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-}
-
-.form-group input:focus, .form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.error {
-  color: #e53e3e;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.success {
-  color: #38a169;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.deposit-id {
-  background: #f7fafc;
-  border: 2px solid #667eea;
-  padding: 15px;
-  border-radius: 8px;
-  font-family: monospace;
-  font-size: 18px;
-  text-align: center;
-  margin: 20px 0;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.status-created { background: #bee3f8; color: #2c5282; }
-.status-pending_payment { background: #fbd38d; color: #744210; }
-.status-active { background: #c6f6d5; color: #22543d; }
-.status-fulfilled { background: #9ae6b4; color: #22543d; }
-.status-expired { background: #fed7d7; color: #742a2a; }
-.status-cancelled { background: #e2e8f0; color: #4a5568; }
