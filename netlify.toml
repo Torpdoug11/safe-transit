@@ -1,22 +1,21 @@
 [build]
-  command = "npm install --production"
-  publish = "public"
+  command = "cd frontend && npm install && npm run build"
+  publish = "frontend/dist"
 
 [build.environment]
-  NODE_VERSION = "18.0.0"
-  NPM_VERSION = "9.0.0"
-
-[functions]
-  directory = ""
+  NODE_VERSION = "18"
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to = "https://safe-transit-api.onrender.com/:splat"
   status = 200
 
-[dev]
-  framework = "#custom"
-  command = "npm start"
-  port = 3000
-  targetPort = 3000
-  autoLaunch = true
+[[redirects]]
+  from = "/deposit/*"
+  to = "https://safe-transit-api.onrender.com/deposit/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/payment/*"
+  to = "https://safe-transit-api.onrender.com/payment/:splat"
+  status = 200
