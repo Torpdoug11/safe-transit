@@ -14,12 +14,6 @@ setInterval(() => {
       deposit.updateStatus('expired');
       deposits.set(id, deposit);
       console.log(`Auto-expired deposit ${id}`);
-      
-      // Release payment hold if payment was completed
-      if (deposit.payment_status === 'completed' && deposit.stripe_payment_intent_id) {
-        // In a real implementation, you'd call Stripe API to release the hold
-        console.log(`Should release payment hold for expired deposit ${id}`);
-      }
     }
   }
 }, 60000); // Run every minute

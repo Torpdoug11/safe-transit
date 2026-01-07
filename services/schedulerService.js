@@ -149,29 +149,12 @@ class SchedulerService {
 
   async handlePaymentRefund(deposit) {
     try {
-      // If using Stripe, attempt to refund the payment
-      if (deposit.stripe_payment_intent_id && process.env.STRIPE_SECRET_KEY) {
-        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-        
-        try {
-          const refund = await stripe.refunds.create({
-            payment_intent: deposit.stripe_payment_intent_id,
-            reason: 'expired_deposit'
-          });
-          
-          console.log(`Refund processed for deposit ${deposit.id}: ${refund.id}`);
-          deposit.updatePaymentStatus('refunded');
-          
-        } catch (stripeError) {
-          console.error(`Failed to process refund for deposit ${deposit.id}:`, stripeError);
-          deposit.updatePaymentStatus('refund_failed');
-        }
-      } else {
-        // For non-Stripe payments, just mark as refunded
-        deposit.updatePaymentStatus('refunded');
-      }
+      // Mark payment as refunded
+      deposit.updatePaymentStatus('refunded');
+      console.log(`Payment marked as refunded for deposit ${deposit.id}`);
     } catch (error) {
       console.error(`Error handling payment refund for deposit ${deposit.id}:`, error);
+      deposit.updatePaymentStatus('refund_failed');
     }
   }
 

@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const { router: depositRoutes } = require('./routes/deposits');
 const paymentRoutes = require('./routes/payments');
-const webhookRoutes = require('./routes/webhooks');
 const adminRoutes = require('./routes/admin');
 const { router: schedulerRoutes, setSchedulerService } = require('./routes/scheduler');
 const SchedulerService = require('./services/schedulerService');
@@ -15,8 +14,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Stripe webhook middleware (must be before express.json for webhooks)
-app.use('/webhooks/stripe', express.raw({ type: 'application/json' }));
 
 // CORS middleware (for development)
 app.use((req, res, next) => {
@@ -34,7 +31,6 @@ app.use((req, res, next) => {
 // Routes
 app.use('/deposit', depositRoutes);
 app.use('/payment', paymentRoutes);
-app.use('/webhooks', webhookRoutes);
 app.use('/admin', adminRoutes);
 app.use('/scheduler', schedulerRoutes);
 
@@ -61,12 +57,9 @@ app.get('/', (req, res) => {
         getAll: 'GET /deposit'
       },
       payments: {
-        createCheckout: 'POST /payment/create-checkout-session',
+        createPayment: 'POST /payment/create-payment',
         capturePayment: 'POST /payment/capture-payment',
         releasePayment: 'POST /payment/release-payment'
-      },
-      webhooks: {
-        stripe: 'POST /webhooks/stripe'
       }
     }
   });

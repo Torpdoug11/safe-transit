@@ -8,8 +8,6 @@ class Deposit {
     creator_id,
     receiver_id,
     status = 'created',
-    stripe_payment_intent_id = null,
-    stripe_checkout_session_id = null,
     payment_status = 'pending',
     creator_email = null,
     receiver_email = null,
@@ -27,8 +25,6 @@ class Deposit {
     this.creator_id = creator_id;
     this.receiver_id = receiver_id;
     this.status = status;
-    this.stripe_payment_intent_id = stripe_payment_intent_id;
-    this.stripe_checkout_session_id = stripe_checkout_session_id;
     this.payment_status = payment_status;
     this.creator_email = creator_email;
     this.receiver_email = receiver_email;
@@ -63,15 +59,6 @@ class Deposit {
     this.updated_at = new Date();
   }
 
-  setStripePaymentIntentId(paymentIntentId) {
-    this.stripe_payment_intent_id = paymentIntentId;
-    this.updated_at = new Date();
-  }
-
-  setStripeCheckoutSessionId(checkoutSessionId) {
-    this.stripe_checkout_session_id = checkoutSessionId;
-    this.updated_at = new Date();
-  }
 
   updateNotificationPreferences(preferences) {
     this.notification_preferences = { ...this.notification_preferences, ...preferences };
@@ -98,8 +85,6 @@ class Deposit {
       receiver_id: this.receiver_id,
       status: this.status,
       payment_status: this.payment_status,
-      stripe_payment_intent_id: this.stripe_payment_intent_id,
-      stripe_checkout_session_id: this.stripe_checkout_session_id,
       creator_email: this.creator_email,
       receiver_email: this.receiver_email,
       notification_preferences: this.notification_preferences,

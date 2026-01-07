@@ -3,7 +3,6 @@ const router = express.Router();
 const Deposit = require('../models/Deposit');
 const AuditLog = require('../models/AuditLog');
 const validator = require('validator');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const auditLogs = new Map();
 
@@ -141,12 +140,9 @@ router.post('/deposits/:id/restitute', async (req, res) => {
     
     const previousPaymentStatus = deposit.payment_status;
     
-    if (deposit.stripe_payment_intent_id) {
-      try {
-        await stripe.paymentIntents.cancel(deposit.stripe_payment_intent_id);
-      } catch (stripeError) {
-        console.error('Stripe cancellation error:', stripeError);
-      }
+    // Mark payment as cancelled
+    if (deposit.payment_status === 'processing' || deposit.payment_status === 'completed') {
+      deposit.updatePaymentStatus('cancelled');
     }
     
     deposit.updatePaymentStatus('cancelled');
@@ -164,7 +160,6 @@ router.post('/deposits/:id/restitute', async (req, res) => {
       admin_id,
       reason,
       metadata: {
-        stripe_payment_intent_id: deposit.stripe_payment_intent_id,
         endpoint: req.originalUrl
       }
     });

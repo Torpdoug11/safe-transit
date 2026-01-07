@@ -1,0 +1,21 @@
+﻿[build]
+  command = " npm run build\
+  publish = " dist\
+
+[build.environment]
+  NODE_VERSION = " 18\
+
+[[redirects]]
+  from = " /api/*\
+  to = " https://safe-transit-api.onrender.com/:splat\
+  status = 200
+
+[[redirects]]
+  from = " /deposit/*\
+  to = " https://safe-transit-api.onrender.com/deposit/:splat\
+  status = 200
+
+[[redirects]]
+  from = " /payment/*\
+  to = " https://safe-transit-api.onrender.com/payment/:splat\
+  status = 200
